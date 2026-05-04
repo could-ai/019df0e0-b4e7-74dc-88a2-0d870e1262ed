@@ -10,12 +10,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SitusWeb Landing Page',
+      title: 'TechNova Landing Page',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
-        fontFamily: 'Roboto', // Font standar untuk web
+        fontFamily: 'Roboto',
       ),
       initialRoute: '/',
       routes: {
@@ -30,105 +30,105 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Mengecek lebar layar untuk desain responsif
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isDesktop = screenWidth > 800;
-
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.5,
-        surfaceTintColor: Colors.transparent,
-        title: Row(
-          children: [
-            const Icon(Icons.rocket_launch, color: Colors.blueAccent, size: 28),
-            const SizedBox(width: 10),
-            const Text(
-              'SitusWeb',
-              style: TextStyle(
-                fontWeight: FontWeight.bold, 
-                color: Colors.black87,
-                fontSize: 22,
-              ),
-            ),
-          ],
-        ),
-        actions: isDesktop
-            ? [
-                _navItem('Beranda'),
-                _navItem('Fitur'),
-                _navItem('Harga'),
-                _navItem('Kontak'),
-                const SizedBox(width: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                    ),
-                    child: const Text('Mulai Gratis'),
-                  ),
-                ),
-                const SizedBox(width: 24),
-              ]
-            : [
-                IconButton(
-                  icon: const Icon(Icons.menu, color: Colors.black87),
-                  onPressed: () {
-                    // Tindakan saat menu hamburger diklik di versi mobile
-                  },
-                )
-              ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _HeroSection(isDesktop: isDesktop),
-            _FeaturesSection(isDesktop: isDesktop),
-            _CtaSection(),
-            _FooterSection(),
-          ],
-        ),
+      body: CustomScrollView(
+        slivers: [
+          const SliverAppBar(
+            floating: true,
+            pinned: true,
+            backgroundColor: Colors.white,
+            elevation: 1,
+            title: _NavBar(),
+            centerTitle: false,
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              const _HeroSection(),
+              const _FeaturesSection(),
+              const _CallToActionSection(),
+              const _FooterSection(),
+            ]),
+          ),
+        ],
       ),
     );
   }
+}
 
-  Widget _navItem(String title) {
+// --- Navigation Bar ---
+class _NavBar extends StatelessWidget {
+  const _NavBar();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDesktop = MediaQuery.of(context).size.width > 800;
+
+    return Row(
+      children: [
+        const Icon(Icons.ac_unit, color: Colors.blueAccent, size: 28),
+        const SizedBox(width: 8),
+        const Text(
+          'TechNova',
+          style: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+        ),
+        const Spacer(),
+        if (isDesktop) ...[
+          const _NavItem(title: 'Beranda'),
+          const _NavItem(title: 'Fitur'),
+          const _NavItem(title: 'Harga'),
+          const _NavItem(title: 'Kontak'),
+          const SizedBox(width: 16),
+        ],
+        ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blueAccent,
+            foregroundColor: Colors.white,
+          ),
+          child: const Text('Mulai'),
+        ),
+      ],
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  final String title;
+  const _NavItem({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: TextButton(
         onPressed: () {},
         child: Text(
           title,
-          style: const TextStyle(
-            color: Colors.black87, 
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-          ),
+          style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.w600),
         ),
       ),
     );
   }
 }
 
+// --- Hero Section ---
 class _HeroSection extends StatelessWidget {
-  final bool isDesktop;
-  const _HeroSection({required this.isDesktop});
+  const _HeroSection();
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isDesktop = screenWidth > 800;
+
     return Container(
-      width: double.infinity,
       padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 100 : 24,
-        vertical: isDesktop ? 100 : 60,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
+        horizontal: isDesktop ? screenWidth * 0.1 : 24,
+        vertical: 80,
       ),
       child: Flex(
         direction: isDesktop ? Axis.horizontal : Axis.vertical,
@@ -137,13 +137,14 @@ class _HeroSection extends StatelessWidget {
           Expanded(
             flex: isDesktop ? 1 : 0,
             child: Column(
-              crossAxisAlignment: isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+              crossAxisAlignment:
+                  isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Bangun Kehadiran Digital Anda dengan Mudah',
+                  'Bangun Produk Hebat,\nLebih Cepat',
                   textAlign: isDesktop ? TextAlign.left : TextAlign.center,
                   style: TextStyle(
-                    fontSize: isDesktop ? 52 : 36,
+                    fontSize: isDesktop ? 56 : 36,
                     fontWeight: FontWeight.w900,
                     color: Colors.black87,
                     height: 1.2,
@@ -151,7 +152,7 @@ class _HeroSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Kami menyediakan solusi modern untuk membangun antarmuka web yang sangat cepat, responsif, dan mudah diakses di seluruh perangkat layar.',
+                  'Percepat kinerja tim Anda dengan fitur mutakhir yang dirancang untuk produktivitas maksimal dan kemudahan alur kerja.',
                   textAlign: isDesktop ? TextAlign.left : TextAlign.center,
                   style: const TextStyle(
                     fontSize: 18,
@@ -168,58 +169,43 @@ class _HeroSection extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
                         backgroundColor: Colors.blueAccent,
                         foregroundColor: Colors.white,
-                        elevation: 0,
-                        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 20),
+                        textStyle: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      child: const Text('Mulai Sekarang'),
+                      child: const Text('Coba Gratis'),
                     ),
                     OutlinedButton(
                       onPressed: () {},
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 20),
+                        textStyle: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                         side: const BorderSide(color: Colors.blueAccent),
-                        foregroundColor: Colors.blueAccent,
-                        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      child: const Text('Pelajari Lebih Lanjut'),
+                      child: const Text('Pelajari Lebih Lanjut', style: TextStyle(color: Colors.blueAccent)),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
-          if (isDesktop) const SizedBox(width: 80),
-          if (!isDesktop) const SizedBox(height: 50),
+          if (isDesktop) const SizedBox(width: 60),
+          if (!isDesktop) const SizedBox(height: 60),
           Expanded(
             flex: isDesktop ? 1 : 0,
             child: Container(
-              height: isDesktop ? 400 : 300,
+              height: 400,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.blue.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.blueAccent.withOpacity(0.15),
-                    blurRadius: 40,
-                    offset: const Offset(0, 20),
-                  ),
-                ],
               ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Icon(Icons.dashboard_customize_rounded, size: 120, color: Colors.blue.shade100),
-                  const Positioned(
-                    bottom: 30,
-                    child: Text(
-                      'Ilustrasi Tampilan Web',
-                      style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ],
+              child: const Center(
+                child: Icon(Icons.devices, size: 120, color: Colors.blueAccent),
               ),
             ),
           ),
@@ -229,22 +215,27 @@ class _HeroSection extends StatelessWidget {
   }
 }
 
+// --- Features Section ---
 class _FeaturesSection extends StatelessWidget {
-  final bool isDesktop;
-  const _FeaturesSection({required this.isDesktop});
+  const _FeaturesSection();
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isDesktop = screenWidth > 800;
+
     return Container(
+      color: Colors.grey[50],
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 100 : 24,
-        vertical: 100,
+        horizontal: isDesktop ? screenWidth * 0.1 : 24,
+        vertical: 80,
       ),
       child: Column(
         children: [
           const Text(
-            'Fitur Unggulan',
+            'Mengapa Memilih Kami?',
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 36,
               fontWeight: FontWeight.bold,
@@ -253,30 +244,33 @@ class _FeaturesSection extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           const Text(
-            'Nikmati berbagai kemudahan dan teknologi terkini untuk mendukung kesuksesan produk Anda.',
-            textAlign: TextAlign.center,
+            'Kami menyediakan solusi terbaik untuk mengembangkan bisnis Anda.',
             style: TextStyle(fontSize: 18, color: Colors.black54),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 60),
           Wrap(
-            spacing: 30,
-            runSpacing: 30,
+            spacing: 40,
+            runSpacing: 40,
             alignment: WrapAlignment.center,
-            children: [
+            children: const [
               _FeatureCard(
                 icon: Icons.speed,
-                title: 'Performa Tinggi',
-                description: 'Dioptimalkan untuk kecepatan pemuatan halaman yang instan tanpa jeda.',
-              ),
-              _FeatureCard(
-                icon: Icons.devices,
-                title: 'Desain Responsif',
-                description: 'Tampilan secara otomatis beradaptasi dengan layar HP, tablet, maupun desktop.',
+                title: 'Sangat Cepat',
+                description:
+                    'Performa yang dioptimalkan untuk menjaga alur kerja Anda tetap lancar.',
               ),
               _FeatureCard(
                 icon: Icons.security,
-                title: 'Aman & Tangguh',
-                description: 'Dilengkapi dengan arsitektur tangguh untuk melindungi privasi pengguna.',
+                title: 'Keamanan Tinggi',
+                description:
+                    'Keamanan level enterprise untuk melindungi data privasi Anda secara otomatis.',
+              ),
+              _FeatureCard(
+                icon: Icons.analytics,
+                title: 'Analitik Canggih',
+                description:
+                    'Dapatkan wawasan mendalam tentang metrik Anda dengan dasbor intuitif kami.',
               ),
             ],
           ),
@@ -300,15 +294,14 @@ class _FeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 320,
+      width: 300,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -320,10 +313,10 @@ class _FeatureCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(12),
+              color: Colors.blue.withOpacity(0.1),
+              shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 36, color: Colors.blueAccent),
+            child: Icon(icon, size: 32, color: Colors.blueAccent),
           ),
           const SizedBox(height: 24),
           Text(
@@ -334,13 +327,13 @@ class _FeatureCard extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Text(
             description,
             style: const TextStyle(
               fontSize: 16,
               color: Colors.black54,
-              height: 1.6,
+              height: 1.5,
             ),
           ),
         ],
@@ -349,27 +342,30 @@ class _FeatureCard extends StatelessWidget {
   }
 }
 
-class _CtaSection extends StatelessWidget {
+// --- Call To Action Section ---
+class _CallToActionSection extends StatelessWidget {
+  const _CallToActionSection();
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
       color: Colors.blueAccent,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 24),
       child: Column(
         children: [
           const Text(
-            'Siap Untuk Memulai?',
+            'Siap Meningkatkan Produktivitas Anda?',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 36,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           const Text(
-            'Bergabunglah bersama ribuan pengguna lainnya yang telah merasakan manfaatnya.',
+            'Bergabunglah dengan ribuan pengguna kami hari ini.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,
@@ -383,10 +379,10 @@ class _CtaSection extends StatelessWidget {
               backgroundColor: Colors.white,
               foregroundColor: Colors.blueAccent,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-              textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              elevation: 0,
+              textStyle:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            child: const Text('Buat Akun Gratis'),
+            child: const Text('Mulai Sekarang'),
           ),
         ],
       ),
@@ -394,27 +390,37 @@ class _CtaSection extends StatelessWidget {
   }
 }
 
+// --- Footer Section ---
 class _FooterSection extends StatelessWidget {
+  const _FooterSection();
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
-      color: Colors.grey.shade900,
-      child: const Column(
+      color: Colors.black87,
+      child: Column(
         children: [
-          Text(
-            'SitusWeb',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(Icons.ac_unit, color: Colors.white, size: 24),
+              SizedBox(width: 8),
+              Text(
+                'TechNova',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 20),
-          Text(
-            '© 2026 SitusWeb. Seluruh hak cipta dilindungi.',
-            style: TextStyle(color: Colors.white54, fontSize: 14),
+          const SizedBox(height: 24),
+          const Text(
+            '© 2026 TechNova Inc. Hak Cipta Dilindungi.',
+            style: TextStyle(color: Colors.white54),
           ),
         ],
       ),
